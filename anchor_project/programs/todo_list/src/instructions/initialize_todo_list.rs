@@ -9,17 +9,13 @@ pub fn initialize_todo_list(
 ) -> Result<()> {
     let initialized_todo_list = &mut ctx.accounts.todo_list;
     require!(
-        date_str.as_bytes().len() <= DATE_LENGTH,
-        TodoListError::InvalidDate
-    );
-    require!(
         validate_date_format(&date_str),
         TodoListError::InvalidDate
     );
 
     initialized_todo_list.list_author = ctx.accounts.list_authority.key();
     let mut date_data = [0u8; DATE_LENGTH];
-    date_data[..date_str.as_bytes().len()].copy_from_slice(date_str.as_bytes());
+    date_data[..DATE_LENGTH].copy_from_slice(date_str.as_bytes());
     initialized_todo_list.date = date_data;
     initialized_todo_list.not_done_todo_count = 0;
     initialized_todo_list.done_todo_count = 0;
@@ -47,7 +43,7 @@ pub struct InitializeTodoList<'info> {
 }
 
 fn validate_date_format(date: &str) -> bool {
-    if date.len() != 10 {
+    if date.len() != DATE_LENGTH {
         return false;
     }
 

@@ -14,4 +14,8 @@ pub mod todo_list {
     pub fn initialize(ctx: Context<InitializeTodoList>, date_str: String) -> Result<()> {
         initialize_todo_list(ctx, date_str)
     }
+
+    pub fn create_todo(ctx: Context<AddTodo>, todo_content: String) -> Result<()> {
+        add_todo(ctx, todo_content)
+    }
 }
