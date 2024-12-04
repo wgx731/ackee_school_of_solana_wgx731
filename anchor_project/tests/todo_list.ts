@@ -24,6 +24,11 @@ describe("todo_list", () => {
   const todo_bob1 = "Buy Milk";
   const todo_bob2 = "Walk the dog";
 
+  const date_alice1 = "2030-01-02";
+  const date_alice2 = "1999-01-02";
+
+  const todo_alice = "Buy Bread";
+
   describe("TodoList", async () => {
     it("initialize todo - success", async () => {
       await airdrop(provider.connection, bob.publicKey)
@@ -79,9 +84,37 @@ describe("todo_list", () => {
       }
       assert.strictEqual(should_fail, "Failed")
     });
+    it("Alice create normal todo list - success", async () => {
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice1, alice.publicKey, program.programId)
+      await program.methods.initialize(date_alice1).accounts(
+        {
+          listAuthority: alice.publicKey,
+          todoList: list_pkey,
+          systemProgram: anchor.web3.SystemProgram.programId
+        }
+      ).signers([alice]).rpc({ commitment: "confirmed" })
+      await checkTodoList(
+        program, list_pkey, alice.publicKey, date_alice1, 0, list_bump
+      )
+    });
+    it("Alice create expired todo list - success", async () => {
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice2, alice.publicKey, program.programId)
+      await program.methods.initialize(date_alice2).accounts(
+        {
+          listAuthority: alice.publicKey,
+          todoList: list_pkey,
+          systemProgram: anchor.web3.SystemProgram.programId
+        }
+      ).signers([alice]).rpc({ commitment: "confirmed" })
+      await checkTodoList(
+        program, list_pkey, alice.publicKey, date_alice2, 0, list_bump
+      )
+    });
   });
-  describe("Todo", async () => {
-    it("Alice add first todo - success", async () => {
+  describe("Bob Todo", async () => {
+    it("Bob add first todo - success", async () => {
       await airdrop(provider.connection, bob.publicKey)
       const [list_pkey, list_bump] = getTodoListAddress(date_bob1, bob.publicKey, program.programId)
       const [todo_pkey, todo_bump] = getTodoAddress(todo_bob1, bob.publicKey, list_pkey, program.programId)
@@ -171,6 +204,122 @@ describe("todo_list", () => {
         ).signers([alice]).rpc({ commitment: "confirmed" })
       } catch (error) {
         assert.isTrue(SolanaError.contains(error.logs, "ConstraintSeeds"), error.logs)
+        should_fail = "Failed"
+      }
+      assert.strictEqual(should_fail, "Failed")
+    });
+  });
+  describe("Alice Todo", async () => {
+    it("Alice add todo to normal todo list - success", async () => {
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice1, alice.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_alice, alice.publicKey, list_pkey, program.programId)
+      await program.methods.createTodo(todo_alice).accounts(
+        {
+          todoAuthor: alice.publicKey,
+          todo: todo_pkey,
+          todoList: list_pkey,
+          systemProgram: anchor.web3.SystemProgram.programId
+        }
+      ).signers([alice]).rpc({ commitment: "confirmed" })
+      await checkTodo(
+        program, todo_pkey, alice.publicKey, list_pkey, todo_alice, todo_bump 
+      )
+      await checkTodoList(
+        program, list_pkey, alice.publicKey, date_alice1, 1, list_bump
+      )
+    });
+    it("Alice add todo to expired todo list - success", async () => {
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice2, alice.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_alice, alice.publicKey, list_pkey, program.programId)
+      await program.methods.createTodo(todo_alice).accounts(
+        {
+          todoAuthor: alice.publicKey,
+          todo: todo_pkey,
+          todoList: list_pkey,
+          systemProgram: anchor.web3.SystemProgram.programId
+        }
+      ).signers([alice]).rpc({ commitment: "confirmed" })
+      await checkTodo(
+        program, todo_pkey, alice.publicKey, list_pkey, todo_alice, todo_bump 
+      )
+      await checkTodoList(
+        program, list_pkey, alice.publicKey, date_alice2, 1, list_bump
+      )
+    });
+    it("Alice mark normal list todo as not done - fail", async () => {
+      let should_fail = "This Should Fail"
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice1, alice.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_alice, alice.publicKey, list_pkey, program.programId)
+      try {
+        await program.methods.markTodoNotDone().accounts(
+          {
+            todoAuthor: alice.publicKey,
+            todo: todo_pkey,
+            todoList: list_pkey,
+            systemProgram: anchor.web3.SystemProgram.programId
+          }
+        ).signers([alice]).rpc({ commitment: "confirmed" })
+      } catch (error) {
+        const err = anchor.AnchorError.parse(error.logs)
+        assert.strictEqual(err.error.errorCode.code, "AlreadyNotDone")
+        should_fail = "Failed"
+      }
+      assert.strictEqual(should_fail, "Failed")
+    });
+    it("Alice mark normal list todo as done - success", async () => {
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice1, alice.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_alice, alice.publicKey, list_pkey, program.programId)
+      await program.methods.markTodoDone().accounts(
+        {
+          todoAuthor: alice.publicKey,
+          todo: todo_pkey,
+          todoList: list_pkey,
+          systemProgram: anchor.web3.SystemProgram.programId
+        }
+      ).signers([alice]).rpc({ commitment: "confirmed" })
+    });
+    it("Alice mark normal list todo as done again - fail", async () => {
+      let should_fail = "This Should Fail"
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice1, alice.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_alice, alice.publicKey, list_pkey, program.programId)
+      try {
+        await program.methods.markTodoDone().accounts(
+          {
+            todoAuthor: alice.publicKey,
+            todo: todo_pkey,
+            todoList: list_pkey,
+            systemProgram: anchor.web3.SystemProgram.programId
+          }
+        ).signers([alice]).rpc({ commitment: "confirmed" })
+      } catch (error) {
+        const err = anchor.AnchorError.parse(error.logs)
+        assert.strictEqual(err.error.errorCode.code, "AlreadyDone")
+        should_fail = "Failed"
+      }
+      assert.strictEqual(should_fail, "Failed")
+    });
+    it("Alice mark expired list todo as done - fail", async () => {
+      let should_fail = "This Should Fail"
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_alice2, alice.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_alice, alice.publicKey, list_pkey, program.programId)
+      try {
+        await program.methods.markTodoDone().accounts(
+          {
+            todoAuthor: alice.publicKey,
+            todo: todo_pkey,
+            todoList: list_pkey,
+            systemProgram: anchor.web3.SystemProgram.programId
+          }
+        ).signers([alice]).rpc({ commitment: "confirmed" })
+      } catch (error) {
+        const err = anchor.AnchorError.parse(error.logs)
+        assert.strictEqual(err.error.errorCode.code, "AlreadyExpired")
         should_fail = "Failed"
       }
       assert.strictEqual(should_fail, "Failed")

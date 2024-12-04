@@ -6,8 +6,8 @@ pub const TODO_CONTENT_LENGTH: usize = 500;
 pub const TODO_LIST_SEED: &str = "TODO_LIST_SEED";
 pub const TODO_SEED: &str = "TODO_SEED";
 
-#[derive(AnchorDeserialize, AnchorSerialize, Clone)]
-pub enum TodoType {
+#[derive(AnchorDeserialize, AnchorSerialize, Clone, PartialEq)]
+pub enum StatusType {
     Done,
     NotDone,
 }
@@ -30,7 +30,7 @@ pub struct Todo {
     pub parent_list: Pubkey,
     pub content: [u8; TODO_CONTENT_LENGTH],
     pub content_length: u16,
-    pub is_done: TodoType,
+    pub status: StatusType,
     pub bump: u8,
 }
 impl Todo {

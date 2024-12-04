@@ -18,7 +18,7 @@ pub fn add_todo(ctx: Context<AddTodo>, todo_content: String) -> Result<()> {
     todo.content = todo_content_data;
     let content_size :u16 = todo_content.as_bytes().len() as u16;
     todo.content_length = content_size;
-    todo.is_done = TodoType::NotDone;
+    todo.status = StatusType::NotDone;
     todo.bump = ctx.bumps.todo;
 
     let parent_list = &mut ctx.accounts.todo_list;

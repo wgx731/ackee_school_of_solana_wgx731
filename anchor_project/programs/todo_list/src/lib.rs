@@ -1,5 +1,6 @@
 use crate::instructions::*;
 use anchor_lang::prelude::*;
+use states::StatusType;
 
 pub mod errors;
 pub mod instructions;
@@ -21,5 +22,13 @@ pub mod todo_list {
 
     pub fn delete_todo(ctx: Context<RemoveTodo>) -> Result<()> {
         remove_todo(ctx)
+    }
+
+    pub fn mark_todo_done(ctx: Context<MarkTodoStatus>) -> Result<()> {
+        mark_todo_status(ctx, StatusType::Done)
+    }
+
+    pub fn mark_todo_not_done(ctx: Context<MarkTodoStatus>) -> Result<()> {
+        mark_todo_status(ctx, StatusType::NotDone)
     }
 }

@@ -10,4 +10,10 @@ pub enum TodoListError {
     MaxTodoReached,
     #[msg("cannot remove todo, no todos left")]
     MinTodoReached,
+    #[msg("cannot mark todo status, todo list expired")]
+    AlreadyExpired,
+    #[msg("cannot mark todo status, todo already done")]
+    AlreadyDone,
+    #[msg("cannot mark todo status, todo already not done")]
+    AlreadyNotDone,
 }
