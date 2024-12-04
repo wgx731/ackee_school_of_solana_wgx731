@@ -6,6 +6,8 @@ skip-lint = false
 
 [programs.localnet]
 solana_todo = "CgigwV8UUzQiRHaMMgmXJ1u9bmq36xiASqjJRqKZgaWE"
+[programs.devnet]
+solana_todo = "CgigwV8UUzQiRHaMMgmXJ1u9bmq36xiASqjJRqKZgaWE"
 
 [registry]
 url = "https://api.apr.dev"
