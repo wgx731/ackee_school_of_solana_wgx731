@@ -38,7 +38,7 @@ describe("todo_list", () => {
       ).signers([bob]).rpc({ commitment: "confirmed" })
 
       await checkTodoList(
-        program, list_pkey, bob.publicKey, date_bob1, 0, 0, list_bump
+        program, list_pkey, bob.publicKey, date_bob1, 0, list_bump
       )
     });
     it("initialize date longer than 10 bytes - fail", async () => {
@@ -81,7 +81,7 @@ describe("todo_list", () => {
     });
   });
   describe("Todo", async () => {
-    it("Bob add first todo - success", async () => {
+    it("Alice add first todo - success", async () => {
       await airdrop(provider.connection, bob.publicKey)
       const [list_pkey, list_bump] = getTodoListAddress(date_bob1, bob.publicKey, program.programId)
       const [todo_pkey, todo_bump] = getTodoAddress(todo_bob1, bob.publicKey, list_pkey, program.programId)
@@ -95,6 +95,9 @@ describe("todo_list", () => {
       ).signers([bob]).rpc({ commitment: "confirmed" })
       await checkTodo(
         program, todo_pkey, bob.publicKey, list_pkey, todo_bob1, todo_bump 
+      )
+      await checkTodoList(
+        program, list_pkey, bob.publicKey, date_bob1, 1, list_bump
       )
     });
     it("Bob add second todo - success", async () => {
@@ -111,6 +114,9 @@ describe("todo_list", () => {
       ).signers([bob]).rpc({ commitment: "confirmed" })
       await checkTodo(
         program, todo_pkey, bob.publicKey, list_pkey, todo_bob2, todo_bump 
+      )
+      await checkTodoList(
+        program, list_pkey, bob.publicKey, date_bob1, 2, list_bump
       )
     });
     it("Bob add same todo - fail", async () => {
@@ -129,6 +135,42 @@ describe("todo_list", () => {
         ).signers([bob]).rpc({ commitment: "confirmed" })
       } catch (error) {
         assert.isTrue(SolanaError.contains(error.logs, "already in use"), error.logs)
+        should_fail = "Failed"
+      }
+      assert.strictEqual(should_fail, "Failed")
+    });
+    it("Bob remove second todo - success", async () => {
+      await airdrop(provider.connection, bob.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_bob1, bob.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_bob2, bob.publicKey, list_pkey, program.programId)
+      await program.methods.deleteTodo().accounts(
+        {
+          todoAuthor: bob.publicKey,
+          todo: todo_pkey,
+          todoList: list_pkey,
+          systemProgram: anchor.web3.SystemProgram.programId
+        }
+      ).signers([bob]).rpc({ commitment: "confirmed" })
+      await checkTodoList(
+        program, list_pkey, bob.publicKey, date_bob1, 1, list_bump
+      )
+    });
+    it("Alice remove Bob's first todo - fail", async () => {
+      let should_fail = "This Should Fail"
+      await airdrop(provider.connection, alice.publicKey)
+      const [list_pkey, list_bump] = getTodoListAddress(date_bob1, bob.publicKey, program.programId)
+      const [todo_pkey, todo_bump] = getTodoAddress(todo_bob1, bob.publicKey, list_pkey, program.programId)
+      try {
+        await program.methods.deleteTodo().accounts(
+          {
+            todoAuthor: alice.publicKey,
+            todo: todo_pkey,
+            todoList: list_pkey,
+            systemProgram: anchor.web3.SystemProgram.programId
+          }
+        ).signers([alice]).rpc({ commitment: "confirmed" })
+      } catch (error) {
+        assert.isTrue(SolanaError.contains(error.logs, "ConstraintSeeds"), error.logs)
         should_fail = "Failed"
       }
       assert.strictEqual(should_fail, "Failed")
@@ -163,8 +205,7 @@ async function checkTodoList(
   list: PublicKey,
   list_author?: PublicKey,
   date?: string,
-  not_done_todo_count?: number,
-  done_todo_count?: number,
+  todos_count?: number,
   bump?: number,
 ) {
   let listData = await program.account.todoList.fetch(list);
@@ -176,11 +217,8 @@ async function checkTodoList(
     const utf8ByteArray_date = stringToUtf8ByteArray(date);
     assert.strictEqual(listData.date.toString(), utf8ByteArray_date.toString());
   }
-  if (not_done_todo_count || not_done_todo_count == 0) {
-    assert.strictEqual(listData.notDoneTodoCount.toString(), new anchor.BN(not_done_todo_count).toString())
-  }
-  if (done_todo_count || done_todo_count == 0) {
-    assert.strictEqual(listData.doneTodoCount.toString(), new anchor.BN(done_todo_count).toString())
+  if (todos_count) {
+    assert.strictEqual(listData.todosCount.toString(), new anchor.BN(todos_count).toString())
   }
   if (bump) {
     assert.strictEqual(listData.bump.toString(), bump.toString())

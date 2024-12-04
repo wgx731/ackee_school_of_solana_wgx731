@@ -21,6 +21,9 @@ pub fn add_todo(ctx: Context<AddTodo>, todo_content: String) -> Result<()> {
     todo.is_done = TodoType::NotDone;
     todo.bump = ctx.bumps.todo;
 
+    let parent_list = &mut ctx.accounts.todo_list;
+    parent_list.todos_count = parent_list.todos_count.checked_add(1).ok_or(TodoListError::MaxTodoReached)?;
+
     Ok(())
 }
 

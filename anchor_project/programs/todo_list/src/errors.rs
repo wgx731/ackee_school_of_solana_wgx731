@@ -6,4 +6,8 @@ pub enum TodoListError {
     InvalidDate,
     #[msg("cannot create todo, content too long")]
     TodoContentTooLong,
+    #[msg("cannot create todo, max todos reached")]
+    MaxTodoReached,
+    #[msg("cannot remove todo, no todos left")]
+    MinTodoReached,
 }

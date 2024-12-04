@@ -16,13 +16,12 @@ pub enum TodoType {
 pub struct TodoList {
     pub list_author: Pubkey,
     pub date: [u8; DATE_LENGTH],
-    pub not_done_todo_count: u64,
-    pub done_todo_count: u64,
+    pub todos_count: u64,
     pub bump: u8,
 }
 
 impl TodoList {
-    pub const LEN: usize = 32 + DATE_LENGTH + 8 + 8 + 1;
+    pub const LEN: usize = 32 + DATE_LENGTH + 8 + 1;
 }
 
 #[account]

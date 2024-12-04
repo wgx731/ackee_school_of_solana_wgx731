@@ -17,8 +17,7 @@ pub fn initialize_todo_list(
     let mut date_data = [0u8; DATE_LENGTH];
     date_data[..DATE_LENGTH].copy_from_slice(date_str.as_bytes());
     initialized_todo_list.date = date_data;
-    initialized_todo_list.not_done_todo_count = 0;
-    initialized_todo_list.done_todo_count = 0;
+    initialized_todo_list.todos_count = 0;
     initialized_todo_list.bump = ctx.bumps.todo_list;
     Ok(())
 }

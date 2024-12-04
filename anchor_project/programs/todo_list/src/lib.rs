@@ -18,4 +18,8 @@ pub mod todo_list {
     pub fn create_todo(ctx: Context<AddTodo>, todo_content: String) -> Result<()> {
         add_todo(ctx, todo_content)
     }
+
+    pub fn delete_todo(ctx: Context<RemoveTodo>) -> Result<()> {
+        remove_todo(ctx)
+    }
 }
