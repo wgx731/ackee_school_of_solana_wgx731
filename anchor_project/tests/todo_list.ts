@@ -255,7 +255,6 @@ async function checkTodo(
   }
 }
 
-
 /*
   Helper functions
 */ 
