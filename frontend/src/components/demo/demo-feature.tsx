@@ -8,7 +8,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
-import { TodoListCreate } from './demo-ui';
+import { TodoListCreate, TodoListAll } from './demo-ui';
 
 export default function DemoFeature() {
   const { publicKey } = useWallet();
@@ -29,7 +29,8 @@ export default function DemoFeature() {
           />
         </p>
         <TodoListCreate />
-      </AppHero>
+        </AppHero>
+        <TodoListAll />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">

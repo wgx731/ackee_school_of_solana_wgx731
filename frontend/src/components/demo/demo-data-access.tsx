@@ -61,6 +61,22 @@ export function useDemoProgram() {
   };
 }
 
+export function useTodoListProgramAccount({ account }: { account: PublicKey }) {
+  const { cluster } = useCluster();
+  const transactionToast = useTransactionToast();
+  const { program, accounts } = useDemoProgram();
+
+  const todoListQuery = useQuery({
+    queryKey: ["todo_list", "fetch", { cluster, account }],
+    queryFn: () => program.account.todoList.fetch(account),
+  });
+
+  return {
+    todoListQuery,
+  };
+
+}
+
 function getDemoProgram(provider: AnchorProvider) {
   return new Program(TodoListIDL as TodoList, provider);
 }
