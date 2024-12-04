@@ -1,0 +1,484 @@
+{
+    "address": "CgigwV8UUzQiRHaMMgmXJ1u9bmq36xiASqjJRqKZgaWE",
+    "metadata": {
+      "name": "todo_list",
+      "version": "0.1.0",
+      "spec": "0.1.0",
+      "description": "Created with Anchor"
+    },
+    "instructions": [
+      {
+        "name": "create_todo",
+        "discriminator": [
+          250,
+          161,
+          142,
+          148,
+          131,
+          48,
+          194,
+          181
+        ],
+        "accounts": [
+          {
+            "name": "todo_author",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "todo",
+            "writable": true
+          },
+          {
+            "name": "todo_list",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "account",
+                  "path": "todo_list.date [.. DATE_LENGTH as usize]",
+                  "account": "TodoList"
+                },
+                {
+                  "kind": "const",
+                  "value": [
+                    84,
+                    79,
+                    68,
+                    79,
+                    95,
+                    76,
+                    73,
+                    83,
+                    84,
+                    95,
+                    83,
+                    69,
+                    69,
+                    68
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "todo_list.list_author",
+                  "account": "TodoList"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": [
+          {
+            "name": "todo_content",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "delete_todo",
+        "discriminator": [
+          224,
+          212,
+          234,
+          177,
+          90,
+          57,
+          219,
+          115
+        ],
+        "accounts": [
+          {
+            "name": "todo_author",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "todo",
+            "writable": true
+          },
+          {
+            "name": "todo_list",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "account",
+                  "path": "todo_list.date [.. DATE_LENGTH as usize]",
+                  "account": "TodoList"
+                },
+                {
+                  "kind": "const",
+                  "value": [
+                    84,
+                    79,
+                    68,
+                    79,
+                    95,
+                    76,
+                    73,
+                    83,
+                    84,
+                    95,
+                    83,
+                    69,
+                    69,
+                    68
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "todo_list.list_author",
+                  "account": "TodoList"
+                }
+              ]
+            }
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "initialize",
+        "discriminator": [
+          175,
+          175,
+          109,
+          31,
+          13,
+          152,
+          155,
+          237
+        ],
+        "accounts": [
+          {
+            "name": "list_authority",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "todo_list",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "arg",
+                  "path": "date_str"
+                },
+                {
+                  "kind": "const",
+                  "value": [
+                    84,
+                    79,
+                    68,
+                    79,
+                    95,
+                    76,
+                    73,
+                    83,
+                    84,
+                    95,
+                    83,
+                    69,
+                    69,
+                    68
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "list_authority"
+                }
+              ]
+            }
+          },
+          {
+            "name": "system_program",
+            "address": "11111111111111111111111111111111"
+          }
+        ],
+        "args": [
+          {
+            "name": "date_str",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "mark_todo_done",
+        "discriminator": [
+          188,
+          30,
+          204,
+          216,
+          30,
+          235,
+          33,
+          45
+        ],
+        "accounts": [
+          {
+            "name": "todo_author",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "todo",
+            "writable": true
+          },
+          {
+            "name": "todo_list",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "account",
+                  "path": "todo_list.date [.. DATE_LENGTH as usize]",
+                  "account": "TodoList"
+                },
+                {
+                  "kind": "const",
+                  "value": [
+                    84,
+                    79,
+                    68,
+                    79,
+                    95,
+                    76,
+                    73,
+                    83,
+                    84,
+                    95,
+                    83,
+                    69,
+                    69,
+                    68
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "todo_list.list_author",
+                  "account": "TodoList"
+                }
+              ]
+            }
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "mark_todo_not_done",
+        "discriminator": [
+          19,
+          65,
+          8,
+          27,
+          79,
+          172,
+          68,
+          118
+        ],
+        "accounts": [
+          {
+            "name": "todo_author",
+            "writable": true,
+            "signer": true
+          },
+          {
+            "name": "todo",
+            "writable": true
+          },
+          {
+            "name": "todo_list",
+            "writable": true,
+            "pda": {
+              "seeds": [
+                {
+                  "kind": "account",
+                  "path": "todo_list.date [.. DATE_LENGTH as usize]",
+                  "account": "TodoList"
+                },
+                {
+                  "kind": "const",
+                  "value": [
+                    84,
+                    79,
+                    68,
+                    79,
+                    95,
+                    76,
+                    73,
+                    83,
+                    84,
+                    95,
+                    83,
+                    69,
+                    69,
+                    68
+                  ]
+                },
+                {
+                  "kind": "account",
+                  "path": "todo_list.list_author",
+                  "account": "TodoList"
+                }
+              ]
+            }
+          }
+        ],
+        "args": []
+      }
+    ],
+    "accounts": [
+      {
+        "name": "Todo",
+        "discriminator": [
+          137,
+          179,
+          206,
+          68,
+          34,
+          36,
+          131,
+          54
+        ]
+      },
+      {
+        "name": "TodoList",
+        "discriminator": [
+          237,
+          16,
+          56,
+          14,
+          45,
+          138,
+          67,
+          245
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "code": 6000,
+        "name": "InvalidDate",
+        "msg": "cannot initialize, invalid date"
+      },
+      {
+        "code": 6001,
+        "name": "TodoContentTooLong",
+        "msg": "cannot create todo, content too long"
+      },
+      {
+        "code": 6002,
+        "name": "MaxTodoReached",
+        "msg": "cannot create todo, max todos reached"
+      },
+      {
+        "code": 6003,
+        "name": "MinTodoReached",
+        "msg": "cannot remove todo, no todos left"
+      },
+      {
+        "code": 6004,
+        "name": "AlreadyExpired",
+        "msg": "cannot mark todo status, todo list expired"
+      },
+      {
+        "code": 6005,
+        "name": "AlreadyDone",
+        "msg": "cannot mark todo status, todo already done"
+      },
+      {
+        "code": 6006,
+        "name": "AlreadyNotDone",
+        "msg": "cannot mark todo status, todo already not done"
+      }
+    ],
+    "types": [
+      {
+        "name": "StatusType",
+        "type": {
+          "kind": "enum",
+          "variants": [
+            {
+              "name": "Done"
+            },
+            {
+              "name": "NotDone"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Todo",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "todo_author",
+              "type": "pubkey"
+            },
+            {
+              "name": "parent_list",
+              "type": "pubkey"
+            },
+            {
+              "name": "content",
+              "type": {
+                "array": [
+                  "u8",
+                  500
+                ]
+              }
+            },
+            {
+              "name": "content_length",
+              "type": "u16"
+            },
+            {
+              "name": "status",
+              "type": {
+                "defined": {
+                  "name": "StatusType"
+                }
+              }
+            },
+            {
+              "name": "bump",
+              "type": "u8"
+            }
+          ]
+        }
+      },
+      {
+        "name": "TodoList",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "list_author",
+              "type": "pubkey"
+            },
+            {
+              "name": "date",
+              "type": {
+                "array": [
+                  "u8",
+                  10
+                ]
+              }
+            },
+            {
+              "name": "todos_count",
+              "type": "u64"
+            },
+            {
+              "name": "bump",
+              "type": "u8"
+            }
+          ]
+        }
+      }
+    ]
+  }
