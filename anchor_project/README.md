@@ -8,10 +8,11 @@ The todo list project allow people create a todo list for one day, then you can 
 
 ## Project Feature
 
-1. create a todo list for a day and only one todo list for one day
-2. create todo item with task name in the todo list, same task name is not allowed 
-3. for each todo item you can mark todo item as done or not done if current date is before todo list date
-4. todo item can only be marked as done if it's not done, vice versa
+- [x] create a todo list for a day and only one todo list for one day
+- [x] create todo item with task name in the todo list, same task name is not allowed \[done\]
+- [x] for each todo item you can mark todo item as done or not done if current date is before todo list date \[done\]
+- [x] todo item can only be marked as done if it's not done, vice versa \[done\]
+- [ ] allow user to delete todo list \[not done\]
 
 ## Devnet Program
 
